@@ -14,11 +14,19 @@ class HostGamePageState extends State<HostGamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Host Game')),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            Text('Hosting game with code: ${widget.gameCode}'),
+            Text(
+              'Gamecode: ${widget.gameCode}',
+              style: Theme.of(context).textTheme.headlineLarge,
+            ),
             WaitingPlayerList(),
+            ElevatedButton(
+              onPressed: () => print("start game"),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+              child: Text("Start Game"),
+            ),
           ],
         ),
       ),

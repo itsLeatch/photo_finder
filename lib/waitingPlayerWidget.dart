@@ -15,9 +15,11 @@ class _WaitingPlayerListState extends State<WaitingPlayerList> {
 
   @override
   Widget build(BuildContext context) {
+    var waitingPlayers = getWaitingPlayers();
+
     return Card(
-      child: Wrap(
-        children: getWaitingPlayers()
+      child: Column(
+        children: waitingPlayers
             .map((player) => ListTile(title: Text(player)))
             .toList(),
       ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photo_finder/gamestates.dart';
 import 'package:photo_finder/hostGamePage.dart';
+import 'package:photo_finder/joinGameScreen.dart';
 import 'package:photo_finder/startPage.dart';
 
 // GoRouter configuration
@@ -12,8 +13,31 @@ final _router = GoRouter(
     GoRoute(path: '/', builder: (context, state) => StartPage()),
     GoRoute(
       path: "/hostGame:gameCode",
-      builder: (context, state) =>
-          HostGamePage(gameCode: state.pathParameters['gameCode']!),
+      builder: (context, state) {
+        String? gameCode = state.pathParameters['gameCode'];
+        if (gameCode == null || gameCode.isEmpty) {
+          print("Error no game code provided");
+        }
+        if (gameCode![0] == ':') {
+          gameCode = gameCode.substring(1);
+        }
+
+        return HostGamePage(gameCode: gameCode);
+      },
+    ),
+    GoRoute(
+      path: "/joinGame:gameCode",
+      builder: (context, state) {
+        String? gameCode = state.pathParameters['gameCode'];
+        if (gameCode == null || gameCode.isEmpty) {
+          print("Error no game code provided");
+        }
+        if (gameCode![0] == ':') {
+          gameCode = gameCode.substring(1);
+        }
+
+        return JoinGameScreen(gameCode: gameCode);
+      },
     ),
   ],
 );

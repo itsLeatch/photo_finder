@@ -11,13 +11,18 @@ class StartPage extends StatefulWidget {
 
 class _StartPageState extends State<StartPage> {
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController gameCodeController = TextEditingController();
 
   @override
   void initState() {
     nameController.addListener(() {
       gamestates.playerName = nameController.text;
-      print(gamestates.playerName);
     });
+
+    gameCodeController.addListener(() {
+      gamestates.gameCode = gameCodeController.text;
+    });
+
     super.initState();
   }
 
@@ -25,26 +30,50 @@ class _StartPageState extends State<StartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Photo Finder')),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        spacing: 8,
-        children: [
-          TextField(
-            controller: nameController,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Enter your name',
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 8,
+          children: [
+            SizedBox(
+              width: 512,
+              child: TextField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Enter your name',
+                ),
+              ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () => context.go("/hostGame:123"),
-            child: Text("Host a new Game"),
-          ),
-          ElevatedButton(
-            onPressed: () => print("implement join game"),
-            child: Text("Join a Game"),
-          ),
-        ],
+            ElevatedButton(
+              onPressed: () => context.push("/hostGame:123"),
+              child: Text("Host a new Game"),
+            ),
+            Wrap(
+              spacing: 8,
+              children: [
+                SizedBox(
+                  width: 512,
+                  child: TextField(
+                    controller: gameCodeController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Enter Game Code',
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    print(gamestates.gameCode);
+                    context.push("/joinGame:" + gamestates.gameCode);
+                  },
+                  child: Text("Join a Game"),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
