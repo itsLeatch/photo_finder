@@ -1,0 +1,3 @@
+class Gamestates {
+  String playerName = "";
+}
