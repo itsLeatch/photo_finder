@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:photo_finder/objectAssignmentScreen.dart';
 import 'package:photo_finder/waitingPlayerWidget.dart';
 
 class HostGamePage extends StatefulWidget {
@@ -23,7 +25,9 @@ class HostGamePageState extends State<HostGamePage> {
             ),
             WaitingPlayerList(),
             ElevatedButton(
-              onPressed: () => print("start game"),
+              onPressed: () {
+                ImagePicker().pickImage(source: ImageSource.camera);
+              },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
               child: Text("Start Game"),
             ),

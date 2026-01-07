@@ -47,7 +47,9 @@ class _StartPageState extends State<StartPage> {
               ),
             ),
             ElevatedButton(
-              onPressed: () => context.push("/hostGame:123"),
+              onPressed: () => context.push("/hostGame:123").then((value) {
+                print("popped");
+              }),
               child: Text("Host a new Game"),
             ),
             Wrap(

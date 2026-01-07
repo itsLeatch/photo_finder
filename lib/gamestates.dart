@@ -1,7 +1,6 @@
-import 'package:camera/camera.dart';
-
 class Gamestates {
   String playerName = "";
   String gameCode = "";
-  List<CameraDescription> cameras = [];
+  String codeWord = "";
+  int round = 1;
 }
