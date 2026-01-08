@@ -115,7 +115,7 @@ class _StartPageState extends State<StartPage> {
                         gamestates.gameCode,
                         gamestates.playerName,
                       );
-                      setupWebSocked(
+                      await setupWebSocked(
                         gamestates.gameCode,
                         gamestates.playerName,
                       );

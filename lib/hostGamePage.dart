@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:photo_finder/main.dart';
 import 'package:photo_finder/objectAssignmentScreen.dart';
 import 'package:photo_finder/waitingPlayerWidget.dart';

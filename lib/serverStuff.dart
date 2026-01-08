@@ -5,9 +5,11 @@ import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_finder/main.dart';
 
+late WebSocket socket;
+
 final baseUrl = 'https://midnight.ernestsgm.com';
 
-void setupWebSocked(String gameId, String playerName) async {
+Future<void> setupWebSocked(String gameId, String playerName) async {
   socket = await WebSocket.connect(
     'ws://midnight.ernestsgm.com/game?gameId=$gameId&name=$playerName',
   );
@@ -30,8 +32,13 @@ void setupWebSocked(String gameId, String playerName) async {
       default:
         print('Unknown message type: $type');
     }
-    print('Received data: $data');
   });
+}
+
+void startNewGame() {
+  socket.add(
+    '{"type": "client:startGame", "gameId": "${widget.gameCode}", "playerName": "${gamestates.playerName}"}',
+  );
 }
 
 Future<Response> joinGame(String joinCode, String playerName) async {
@@ -96,14 +103,18 @@ header:headers: {'Content-Type': 'application/json'},
   //response example {"message":"Images uploaded successfully","files":[{"filename":"103f8b1b-1c35-4b99-8f6b-985ab9d49bfa6433108787172316987.jpg","url":"https://silo.deployor.dev/midnight-dev/QS0RJL/testest/1767840594964-103f8b1b-1c35-4b99-8f6b-985ab9d49bfa6433108787172316987.jpg"}
   String url = jsonDecode(response.body)['files'][0]['url'];
 
-  socket.add(
-    jsonEncode({
-      'type': 'client:submitPhoto',
-      'gameId': gamestates.gameCode,
-      'playerName': gamestates.playerName,
-      'photo': url,
-    }),
-  );
+  if (socket != null && socket.readyState == WebSocket.open) {
+    socket.add(
+      jsonEncode({
+        'type': 'client:submitPhoto',
+        'gameId': gamestates.gameCode,
+        'playerName': gamestates.playerName,
+        'photo': url,
+      }),
+    );
+  } else {
+    print('WebSocket is not connected');
+  }
 
   if (response.statusCode == 200) {
     print('Image uploaded successfully');
