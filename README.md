@@ -1,16 +1,6 @@
 # photo_finder
+**Photo Finder** is a fun party game for friend groups. You can create a private room and start playing without making an account. Everyone plays with the same secret word, which stays the same throughout the game—except for one player, the imposter.
 
-A new Flutter project.
+Players take photos related to the secret word. The imposter doesn’t know the word and must figure it out by studying the others’ photos. Photos shouldn’t be too obvious, but if they’re too unrelated, they may look suspicious.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+After all photos are submitted, players vote on who they think the imposter is. Voting can happen over several rounds. If the group correctly identifies the imposter, they win. If the imposter figures out the secret word before being caught, the imposter wins.

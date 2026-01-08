@@ -112,6 +112,7 @@ Must serve images as form-data (Multipart files)
 header:headers: {'Content-Type': 'application/json'},
     body: jsonEncode({'hostName': hostName, 'gameId': gameId, 'playerName': playerName, }),
   */
+  print(imageFile.name);
   final joinCode = Uri.encodeComponent(gamestates.gameCode);
   final encodedName = Uri.encodeComponent(gamestates.playerName);
   final uri = Uri.parse('$baseUrl/games/$joinCode/upload?name=$encodedName');
