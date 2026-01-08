@@ -1,50 +1,19 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-
-//screens
-import 'package:go_router/go_router.dart';
 import 'package:photo_finder/gamestates.dart';
-import 'package:photo_finder/hostGamePage.dart';
-import 'package:photo_finder/joinGameScreen.dart';
 import 'package:photo_finder/startPage.dart';
-
-// GoRouter configuration
-final _router = GoRouter(
-  routes: [
-    GoRoute(path: '/', builder: (context, state) => StartPage()),
-    GoRoute(
-      path: "/hostGame:gameCode",
-      builder: (context, state) {
-        String? gameCode = state.pathParameters['gameCode'];
-        if (gameCode == null || gameCode.isEmpty) {
-          print("Error no game code provided");
-        }
-        if (gameCode![0] == ':') {
-          gameCode = gameCode.substring(1);
-        }
-
-        return HostGamePage(gameCode: gameCode);
-      },
-    ),
-    GoRoute(
-      path: "/joinGame:gameCode",
-      builder: (context, state) {
-        String? gameCode = state.pathParameters['gameCode'];
-        if (gameCode == null || gameCode.isEmpty) {
-          print("Error no game code provided");
-        }
-        if (gameCode![0] == ':') {
-          gameCode = gameCode.substring(1);
-        }
-
-        return JoinGameScreen(gameCode: gameCode);
-      },
-    ),
-  ],
-);
 
 Gamestates gamestates = Gamestates();
 
-void main() {
+void main() async {
+  final socket = await WebSocket.connect('ws://midnight.ernestsgm.com/game');
+  socket.listen((data) {
+    print('Received data: $data');
+  });
+  socket.add(
+    '{"type": "client:startGame", "gameId": "M8XVRK", "playerName": "1"}',
+  );
   runApp(const MyApp());
 }
 
@@ -54,12 +23,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return MaterialApp(
+      home: const StartPage(),
       title: 'Flutter Demo',
-      theme: ThemeData.dark().copyWith(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
       ),
-      routerConfig: _router,
     );
   }
 }

@@ -26,7 +26,13 @@ class HostGamePageState extends State<HostGamePage> {
             WaitingPlayerList(),
             ElevatedButton(
               onPressed: () {
-                ImagePicker().pickImage(source: ImageSource.camera);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ObjectAssignmentScreen(objectToFind: "liquid"),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
               child: Text("Start Game"),

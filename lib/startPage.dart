@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:photo_finder/hostGamePage.dart';
+import 'package:photo_finder/joinGameScreen.dart';
 import 'package:photo_finder/main.dart';
+import 'package:photo_finder/serverStuff.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({super.key});
@@ -26,6 +28,29 @@ class _StartPageState extends State<StartPage> {
     super.initState();
   }
 
+  bool canCreateGame() {
+    if (gamestates.playerName.isEmpty) {
+      const snackBar = SnackBar(content: Text('Name can not be empty'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return false;
+    }
+    return true;
+  }
+
+  bool canJoinGame() {
+    if (gamestates.playerName.isEmpty) {
+      const snackBar = SnackBar(content: Text('Name can not be empty'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return false;
+    }
+    if (gamestates.gameCode.isEmpty) {
+      const snackBar = SnackBar(content: Text('Game Code can not be empty'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,9 +72,24 @@ class _StartPageState extends State<StartPage> {
               ),
             ),
             ElevatedButton(
-              onPressed: () => context.push("/hostGame:123").then((value) {
-                print("popped");
-              }),
+              onPressed: () {
+                startGameMessage(gamestates.playerName, "reaktor_room").then((
+                  value,
+                ) {
+                  print(value.body);
+                });
+
+                if (canCreateGame()) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HostGamePage(gameCode: "123"),
+                    ),
+                  ).then((value) {
+                    leaveGame();
+                  });
+                }
+              },
               child: Text("Host a new Game"),
             ),
             Wrap(
@@ -67,8 +107,23 @@ class _StartPageState extends State<StartPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    print(gamestates.gameCode);
-                    context.push("/joinGame:" + gamestates.gameCode);
+                    if (canJoinGame()) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              JoinGameScreen(gameCode: gamestates.gameCode),
+                        ),
+                      ).then((value) {
+                        joinGame(
+                          gamestates.gameCode,
+                          gamestates.playerName,
+                        ).then((value) {
+                          print(value);
+                        });
+                        leaveGame();
+                      });
+                    }
                   },
                   child: Text("Join a Game"),
                 ),

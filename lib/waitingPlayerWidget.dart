@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:photo_finder/main.dart';
+import 'package:photo_finder/serverStuff.dart';
 
 class WaitingPlayerList extends StatefulWidget {
   const WaitingPlayerList({super.key});
@@ -8,21 +10,29 @@ class WaitingPlayerList extends StatefulWidget {
 }
 
 class _WaitingPlayerListState extends State<WaitingPlayerList> {
-  List<String> getWaitingPlayers() {
-    // This would normally fetch data from a backend or state management solution
-    return ["Player1", "Player2", "Player3"];
-  }
-
   @override
   Widget build(BuildContext context) {
-    var waitingPlayers = getWaitingPlayers();
+    return StreamBuilder<List<String>>(
+      stream: Stream.periodic(Duration(seconds: 1)).asyncMap((_) => connectedPlayers(gamestates.gameCode)),
+      builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return CircularProgressIndicator();
+      } else if (snapshot.hasError) {
+        return Text('Error: ${snapshot.error}');
+      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        return Text('No players waiting');
+      } else {
+        List<String> waitingPlayers = snapshot.data!;
 
-    return Card(
-      child: Column(
-        children: waitingPlayers
+        return Card(
+        child: Column(
+          children: waitingPlayers
             .map((player) => ListTile(title: Text(player)))
             .toList(),
-      ),
+        ),
+        );
+      }
+      },
     );
   }
 }
