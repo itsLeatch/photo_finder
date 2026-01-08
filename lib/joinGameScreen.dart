@@ -12,16 +12,19 @@ class JoinGameScreen extends StatefulWidget {
 }
 
 class JoinGameScreenState extends State<JoinGameScreen> {
+  late VoidCallback _gameStartedListener;
+
   @override
   void initState() {
-    gamestates.gameController.addListener(() {
+    _gameStartedListener = () {
       if (gamestates.gameController.lastMessage == "gameStarted") {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ObjectAssignmentScreen()),
         );
       }
-    });
+    };
+    gamestates.gameController.addListener(_gameStartedListener);
     super.initState();
   }
 
@@ -51,7 +54,7 @@ class JoinGameScreenState extends State<JoinGameScreen> {
 
   @override
   void dispose() {
-    gamestates.gameController.removeListener(() {});
+    gamestates.gameController.removeListener(_gameStartedListener);
     super.dispose();
   }
 }

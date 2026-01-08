@@ -81,7 +81,7 @@ class _StartPageState extends State<StartPage> {
                       .split('"')[0];
                   gamestates.gameCode = gameCode;
                   print("Created game with code: ${gamestates.gameCode}");
-
+                  setupWebSocked(gamestates.gameCode, gamestates.playerName);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -115,6 +115,11 @@ class _StartPageState extends State<StartPage> {
                         gamestates.gameCode,
                         gamestates.playerName,
                       );
+                      setupWebSocked(
+                        gamestates.gameCode,
+                        gamestates.playerName,
+                      );
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(

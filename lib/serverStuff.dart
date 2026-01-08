@@ -1,10 +1,38 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_finder/main.dart';
 
 final baseUrl = 'https://midnight.ernestsgm.com';
+
+void setupWebSocked(String gameId, String playerName) async {
+  socket = await WebSocket.connect(
+    'ws://midnight.ernestsgm.com/game?gameId=$gameId&name=$playerName',
+  );
+  socket.listen((data) {
+    print('WebSocket message received: $data');
+    String type = data.split('"type":"')[1].split('"')[0];
+    switch (type) {
+      case 'server:gameStarted':
+        //TODO: wait for the word in a different way
+        //wait for one second to make sure the word is set
+        Future.delayed(Duration(seconds: 1), () {
+          gamestates.gameController.startGame();
+        });
+        break;
+      case 'server:wordChosen':
+        String word = data.split('"word":"')[1].split('"')[0];
+        gamestates.gameController.chooseWord(word);
+        print('Code word set to: $word');
+        break;
+      default:
+        print('Unknown message type: $type');
+    }
+    print('Received data: $data');
+  });
+}
 
 Future<Response> joinGame(String joinCode, String playerName) async {
   final encodedName = Uri.encodeComponent(playerName);
@@ -63,7 +91,20 @@ header:headers: {'Content-Type': 'application/json'},
   final uri = Uri.parse('$baseUrl/games/$joinCode/upload?name=$encodedName');
   var request = MultipartRequest('POST', uri);
   request.files.add(await MultipartFile.fromPath('images', imageFile.path));
-  final response = await request.send();
+  final streamedResponse = await request.send();
+  final response = await Response.fromStream(streamedResponse);
+  //response example {"message":"Images uploaded successfully","files":[{"filename":"103f8b1b-1c35-4b99-8f6b-985ab9d49bfa6433108787172316987.jpg","url":"https://silo.deployor.dev/midnight-dev/QS0RJL/testest/1767840594964-103f8b1b-1c35-4b99-8f6b-985ab9d49bfa6433108787172316987.jpg"}
+  String url = jsonDecode(response.body)['files'][0]['url'];
+
+  socket.add(
+    jsonEncode({
+      'type': 'client:submitPhoto',
+      'gameId': gamestates.gameCode,
+      'playerName': gamestates.playerName,
+      'photo': url,
+    }),
+  );
+
   if (response.statusCode == 200) {
     print('Image uploaded successfully');
     return true;

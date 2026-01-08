@@ -13,16 +13,19 @@ class HostGamePage extends StatefulWidget {
 }
 
 class HostGamePageState extends State<HostGamePage> {
+  late VoidCallback _gameStartedListener;
+
   @override
   void initState() {
-    gamestates.gameController.addListener(() {
+    _gameStartedListener = () {
       if (gamestates.gameController.lastMessage == "gameStarted") {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ObjectAssignmentScreen()),
         );
       }
-    });
+    };
+    gamestates.gameController.addListener(_gameStartedListener);
     super.initState();
   }
 
@@ -55,7 +58,7 @@ class HostGamePageState extends State<HostGamePage> {
 
   @override
   void dispose() {
-    gamestates.gameController.removeListener(() {});
+    gamestates.gameController.removeListener(_gameStartedListener);
     super.dispose();
   }
 }
