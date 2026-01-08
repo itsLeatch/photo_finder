@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ImagePickerForRound extends StatefulWidget {
-  ImagePickerForRound({super.key, required this.images}) {
-    images = ["1", "2", "3", "4", "5"];
-  }
+  ImagePickerForRound({super.key, required this.images});
   List<String> images;
 
   @override
@@ -33,9 +31,8 @@ class ImagePickerForRoundState extends State<ImagePickerForRound> {
             child: Card(
               color: fillColor,
               child: SizedBox(
-                height: 100,
-                width: 100,
-                child: Placeholder(child: Text("cool image $index")),
+                height: 600,
+                child: Image.network(widget.images[index]),
               ),
             ),
           );

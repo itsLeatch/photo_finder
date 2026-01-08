@@ -4,5 +4,6 @@ class Gamestates {
   String playerName = "";
   String gameCode = "";
   String codeWord = "";
+  List<String> imageURLs = [];
   GameController gameController = GameController();
 }

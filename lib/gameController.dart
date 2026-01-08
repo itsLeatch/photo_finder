@@ -14,4 +14,9 @@ class GameController extends ChangeNotifier {
     lastMessage = "wordChosen";
     notifyListeners();
   }
+
+  void allPhotosSubmitted() {
+    lastMessage = "allPhotosSubmitted";
+    notifyListeners();
+  }
 }

@@ -13,7 +13,7 @@ Future<void> setupWebSocked(String gameId, String playerName) async {
   socket = await WebSocket.connect(
     'wss://midnight.ernestsgm.com/game?gameId=$gameId&name=$playerName',
   );
-  socket.listen((data) {
+  socket.listen((data) async {
     print('WebSocket message received: $data');
     String type = data.split('"type":"')[1].split('"')[0];
     switch (type) {
@@ -29,6 +29,25 @@ Future<void> setupWebSocked(String gameId, String playerName) async {
         gamestates.gameController.chooseWord(word);
         print('Code word set to: $word');
         break;
+      case 'server:photosUpdated':
+        //extract all the urls after photo from things like this: {"type":"server:photosUpdated","gameId":"FHOV2L","photos":[{"name":"jj","photo":"https://silo.deployor.dev/midnight-dev/FHOV2L/jj/1767849540692-4f07425d-5826-4b96-b156-3715602e0813846090211747097372.jpg"},{"name":"thug","photo":"https://silo.deployor.dev/midnight-dev/FHOV2L/thug/1767849541199-image_picker_13DBFDF4-70C4-4315-9CDF-73A36B458E51-32527-00000397C3C9BB2F.jpg"}]
+        List<String> urls = [];
+        String photosPart = data.split('"photos":[')[1].split(']')[0];
+        List<String> photoEntries = photosPart.split('},{');
+        for (var entry in photoEntries) {
+          String url = entry.split('"photo":"')[1].split('"')[0];
+          urls.add(url);
+        }
+        gamestates.imageURLs = urls;
+        print('Updated image URLs: $urls');
+        int numberOfPlayers = await connectedPlayers(
+          gamestates.gameCode,
+        ).then((value) => value.length);
+        if (gamestates.imageURLs.length >= numberOfPlayers) {
+          gamestates.gameController.allPhotosSubmitted();
+        }
+        break;
+
       default:
         print('Unknown message type: $type');
     }

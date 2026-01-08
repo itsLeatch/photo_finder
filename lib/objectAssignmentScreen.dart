@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:photo_finder/imagePickerOfCurrentRound.dart';
 import 'package:photo_finder/main.dart';
 import 'package:photo_finder/serverStuff.dart';
+import 'package:photo_finder/waitingForSubmission.dart';
 
 class ObjectAssignmentScreen extends StatefulWidget {
   ObjectAssignmentScreen({
@@ -44,9 +45,7 @@ class _ObjectAssignmentScreenState extends State<ObjectAssignmentScreen> {
         await uploadImage(value);
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => ImagePickerForRound(images: []),
-          ),
+          MaterialPageRoute(builder: (context) => WaitingForSubmission()),
         );
       }),
     );
