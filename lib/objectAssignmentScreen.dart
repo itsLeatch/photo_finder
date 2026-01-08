@@ -2,15 +2,15 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_finder/imagePickerOfCurrentRound.dart';
+import 'package:photo_finder/main.dart';
+import 'package:photo_finder/serverStuff.dart';
 
 class ObjectAssignmentScreen extends StatefulWidget {
   ObjectAssignmentScreen({
     super.key,
-    required this.objectToFind,
     this.animationDuration = const Duration(seconds: 2),
     this.totalTime = const Duration(seconds: 4),
   });
-  final String objectToFind;
   final Duration animationDuration;
   final Duration totalTime;
 
@@ -40,7 +40,8 @@ class _ObjectAssignmentScreenState extends State<ObjectAssignmentScreen> {
     //after totalTime, navigate to the next screen
     Future.delayed(
       widget.totalTime,
-      () => recivePhoto().then((value) {
+      () => recivePhoto().then((value) async {
+        await uploadImage(value);
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -54,6 +55,10 @@ class _ObjectAssignmentScreenState extends State<ObjectAssignmentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String objectToFind = gamestates.codeWord;
+    if (objectToFind.isEmpty) {
+      objectToFind = "imposter";
+    }
     var textStyle = Theme.of(context).textTheme.headlineMedium;
 
     return Scaffold(
@@ -69,11 +74,11 @@ class _ObjectAssignmentScreenState extends State<ObjectAssignmentScreen> {
                 isRepeatingAnimation: false,
                 animatedTexts: [
                   ScrambleAnimatedText(
-                    widget.objectToFind,
+                    objectToFind,
                     speed: Duration(
                       milliseconds:
                           (widget.animationDuration.inMilliseconds /
-                                  widget.objectToFind.length)
+                                  objectToFind.length)
                               .round(),
                     ),
                   ),

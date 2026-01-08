@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:photo_finder/main.dart';
 import 'package:photo_finder/objectAssignmentScreen.dart';
 import 'package:photo_finder/waitingPlayerWidget.dart';
 
@@ -12,6 +13,19 @@ class HostGamePage extends StatefulWidget {
 }
 
 class HostGamePageState extends State<HostGamePage> {
+  @override
+  void initState() {
+    gamestates.gameController.addListener(() {
+      if (gamestates.gameController.lastMessage == "gameStarted") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ObjectAssignmentScreen()),
+        );
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,12 +40,8 @@ class HostGamePageState extends State<HostGamePage> {
             WaitingPlayerList(),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ObjectAssignmentScreen(objectToFind: "liquid"),
-                  ),
+                socket.add(
+                  '{"type": "client:startGame", "gameId": "${widget.gameCode}", "playerName": "${gamestates.playerName}"}',
                 );
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
@@ -41,5 +51,11 @@ class HostGamePageState extends State<HostGamePage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    gamestates.gameController.removeListener(() {});
+    super.dispose();
   }
 }

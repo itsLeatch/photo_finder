@@ -61,29 +61,32 @@ class _StartPageState extends State<StartPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 8,
           children: [
-            SizedBox(
-              width: 512,
-              child: TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Enter your name',
-                ),
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter your name',
               ),
             ),
             ElevatedButton(
-              onPressed: () {
-                startGameMessage(gamestates.playerName, "reaktor_room").then((
-                  value,
-                ) {
-                  print(value.body);
-                });
-
+              onPressed: () async {
                 if (canCreateGame()) {
+                  var value = await startGameMessage(
+                    gamestates.playerName,
+                    "reaktor_room",
+                  );
+                  final responseData = value.body;
+                  final gameCode = responseData
+                      .split('"joinCode":"')[1]
+                      .split('"')[0];
+                  gamestates.gameCode = gameCode;
+                  print("Created game with code: ${gamestates.gameCode}");
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => HostGamePage(gameCode: "123"),
+                      builder: (context) =>
+                          HostGamePage(gameCode: gamestates.gameCode),
                     ),
                   ).then((value) {
                     leaveGame();
@@ -106,8 +109,12 @@ class _StartPageState extends State<StartPage> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (canJoinGame()) {
+                      await joinGame(
+                        gamestates.gameCode,
+                        gamestates.playerName,
+                      );
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -115,12 +122,6 @@ class _StartPageState extends State<StartPage> {
                               JoinGameScreen(gameCode: gamestates.gameCode),
                         ),
                       ).then((value) {
-                        joinGame(
-                          gamestates.gameCode,
-                          gamestates.playerName,
-                        ).then((value) {
-                          print(value);
-                        });
                         leaveGame();
                       });
                     }

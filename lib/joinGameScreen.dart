@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:photo_finder/main.dart';
+import 'package:photo_finder/objectAssignmentScreen.dart';
 import 'package:photo_finder/waitingPlayerWidget.dart';
 
 class JoinGameScreen extends StatefulWidget {
@@ -10,6 +12,19 @@ class JoinGameScreen extends StatefulWidget {
 }
 
 class JoinGameScreenState extends State<JoinGameScreen> {
+  @override
+  void initState() {
+    gamestates.gameController.addListener(() {
+      if (gamestates.gameController.lastMessage == "gameStarted") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ObjectAssignmentScreen()),
+        );
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,5 +47,11 @@ class JoinGameScreenState extends State<JoinGameScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    gamestates.gameController.removeListener(() {});
+    super.dispose();
   }
 }
