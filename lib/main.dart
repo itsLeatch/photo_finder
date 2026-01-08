@@ -5,7 +5,6 @@ import 'package:photo_finder/gamestates.dart';
 import 'package:photo_finder/startPage.dart';
 
 Gamestates gamestates = Gamestates();
-late WebSocket socket;
 void main() {
   runApp(const MyApp());
 }

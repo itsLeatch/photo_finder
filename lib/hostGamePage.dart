@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:photo_finder/main.dart';
 import 'package:photo_finder/objectAssignmentScreen.dart';
+import 'package:photo_finder/serverStuff.dart';
 import 'package:photo_finder/waitingPlayerWidget.dart';
 
 class HostGamePage extends StatefulWidget {
-  const HostGamePage({super.key, required this.gameCode});
-  final String gameCode;
+  const HostGamePage({super.key,});
 
   @override
   State<HostGamePage> createState() => HostGamePageState();
@@ -36,15 +36,13 @@ class HostGamePageState extends State<HostGamePage> {
         child: Column(
           children: [
             Text(
-              'Gamecode: ${widget.gameCode}',
+              'Gamecode: ${gamestates.gameCode}',
               style: Theme.of(context).textTheme.headlineLarge,
             ),
             WaitingPlayerList(),
             ElevatedButton(
               onPressed: () {
-                socket.add(
-                  '{"type": "client:startGame", "gameId": "${widget.gameCode}", "playerName": "${gamestates.playerName}"}',
-                );
+                startNewGame();
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
               child: Text("Start Game"),

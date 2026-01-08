@@ -84,10 +84,7 @@ class _StartPageState extends State<StartPage> {
                   setupWebSocked(gamestates.gameCode, gamestates.playerName);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HostGamePage(gameCode: gamestates.gameCode),
-                    ),
+                    MaterialPageRoute(builder: (context) => HostGamePage()),
                   ).then((value) {
                     leaveGame();
                   });

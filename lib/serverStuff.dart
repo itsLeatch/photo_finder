@@ -11,7 +11,7 @@ final baseUrl = 'https://midnight.ernestsgm.com';
 
 Future<void> setupWebSocked(String gameId, String playerName) async {
   socket = await WebSocket.connect(
-    'ws://midnight.ernestsgm.com/game?gameId=$gameId&name=$playerName',
+    'wss://midnight.ernestsgm.com/game?gameId=$gameId&name=$playerName',
   );
   socket.listen((data) {
     print('WebSocket message received: $data');
@@ -37,7 +37,7 @@ Future<void> setupWebSocked(String gameId, String playerName) async {
 
 void startNewGame() {
   socket.add(
-    '{"type": "client:startGame", "gameId": "${widget.gameCode}", "playerName": "${gamestates.playerName}"}',
+    '{"type": "client:startGame", "gameId": "${gamestates.gameCode}", "playerName": "${gamestates.playerName}"}',
   );
 }
 
@@ -104,6 +104,7 @@ header:headers: {'Content-Type': 'application/json'},
   String url = jsonDecode(response.body)['files'][0]['url'];
 
   if (socket != null && socket.readyState == WebSocket.open) {
+    print('Sending photo URL via WebSocket: $url');
     socket.add(
       jsonEncode({
         'type': 'client:submitPhoto',
